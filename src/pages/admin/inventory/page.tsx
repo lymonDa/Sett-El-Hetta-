@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchCategories, fetchProducts, transformCategory, transformProduct } from '@/lib/api';
+import { fetchCategories, fetchProducts, transformCategory, transformProduct, type DbCategory, type DbProduct } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 import type { Product, Category } from '@/types';
 import AdminLayout from '@/pages/admin/components/AdminLayout';
@@ -35,8 +35,8 @@ export default function AdminInventoryPage() {
           fetchCategories(),
           fetchProducts(),
         ]);
-        setCategories(dbCategories.map((cat: Record<string, unknown>) => transformCategory(cat)));
-        setProducts(dbProducts.map((p: Record<string, unknown>, i: number) => transformProduct(p, media[p.id as string] || [], i)));
+        setCategories(dbCategories.map((cat: Record<string, unknown>) => transformCategory(cat as DbCategory)));
+        setProducts(dbProducts.map((p: Record<string, unknown>, i: number) => transformProduct(p as DbProduct, media[p.id as string] || [], i)));
       } catch {
         setError(true);
       } finally {

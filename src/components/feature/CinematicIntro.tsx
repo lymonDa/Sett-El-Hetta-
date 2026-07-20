@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import type { Variants } from 'motion/react';
 
 const INTRO_DURATION = 3200;
 const BRAND_NAME = 'Sett El Heta';
@@ -105,7 +106,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
     };
   }, [showParticles]);
 
-  const letterVariants = {
+  const letterVariants: Variants = {
     hidden: { opacity: 0, y: 60, rotateX: -40 },
     visible: (i: number) => ({
       opacity: 1,
@@ -114,7 +115,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
       transition: {
         duration: 0.8,
         delay: 0.6 + i * 0.08,
-        ease: [0.25, 0.8, 0.25, 1],
+        ease: [0.25, 0.8, 0.25, 1] as const,
       },
     }),
   };

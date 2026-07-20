@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { fetchProductBySlug, fetchCategories, transformCategory, uploadProductImage, deleteProductImage, reorderProductImages } from '@/lib/api';
+import { fetchProductBySlug, fetchCategories, transformCategory, uploadProductImage, deleteProductImage, reorderProductImages, type DbCategory } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 import type { Category, Product } from '@/types';
 import AdminLayout from '@/pages/admin/components/AdminLayout';
@@ -54,7 +54,7 @@ export default function AdminProductEditPage() {
     async function loadCategories() {
       try {
         const cats = await fetchCategories();
-        setCategories((cats as unknown as Record<string, unknown>[]).map((c) => transformCategory(c)));
+        setCategories((cats as unknown as Record<string, unknown>[]).map((c) => transformCategory(c as DbCategory)));
       } catch {
         // silent
       }

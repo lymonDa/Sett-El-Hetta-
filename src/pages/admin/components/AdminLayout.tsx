@@ -3,6 +3,7 @@ import { Navigate, Link, useLocation } from 'react-router-dom';
 import { useAdminAuthStore } from '@/stores/adminAuthStore';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
+import type { Variants } from 'motion/react';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -11,7 +12,7 @@ interface AdminLayoutProps {
 const HINT_STORAGE_KEY = 'admin_sidebar_swipe_hint_seen';
 const HINT_AUTO_DISMISS_MS = 10000;
 
-const staggerItem = {
+const staggerItem: Variants = {
   hidden: {
     opacity: 0,
     y: 80,
@@ -26,7 +27,7 @@ const staggerItem = {
     filter: 'blur(0px)',
     rotateX: 0,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 220,
       damping: 10,
       mass: 1.1,
@@ -38,16 +39,16 @@ const staggerItem = {
     scale: 0.85,
     filter: 'blur(6px)',
     rotateX: -10,
-    transition: { duration: 0.24, ease: [0.55, 0.085, 0.68, 0.53] },
+    transition: { duration: 0.24, ease: [0.55, 0.085, 0.68, 0.53] as const },
   },
 };
 
-const sidebarPanelVariants = {
+const sidebarPanelVariants: Variants = {
   hidden: (rtl: boolean) => ({ x: rtl ? '100%' : '-100%' }),
   visible: {
     x: 0,
     transition: {
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 200,
       damping: 24,
       mass: 0.7,
@@ -60,8 +61,8 @@ const sidebarPanelVariants = {
     transition: {
       staggerChildren: 0.05,
       staggerDirection: -1,
-      when: 'afterChildren',
-      type: 'spring',
+      when: 'afterChildren' as const,
+      type: 'spring' as const,
       stiffness: 320,
       damping: 28,
     },
@@ -84,6 +85,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const touchActive = useRef(false);
   const edgeZoneRef = useRef<HTMLDivElement>(null);
 
+  const markHintSeen = useCallback(() => {
+    if (showSwipeHint && !hintFadingOut) {
+      setHintFadingOut(true);
+      setTimeout(() => {
+        setShowSwipeHint(false);
+        localStorage.setItem(HINT_STORAGE_KEY, '1');
+      }, 400);
+    }
+  }, [showSwipeHint, hintFadingOut]);
+
   useEffect(() => {
     const seen = localStorage.getItem(HINT_STORAGE_KEY);
     if (!seen) {
@@ -103,16 +114,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
-
-  const markHintSeen = useCallback(() => {
-    if (showSwipeHint && !hintFadingOut) {
-      setHintFadingOut(true);
-      setTimeout(() => {
-        setShowSwipeHint(false);
-        localStorage.setItem(HINT_STORAGE_KEY, '1');
-      }, 400);
-    }
-  }, [showSwipeHint, hintFadingOut]);
 
   const closeSidebar = useCallback(() => {
     setSidebarOpen(false);
